@@ -1,10 +1,4 @@
 
--- Drop tables if they exist to start fresh
-DROP TABLE IF EXISTS courses CASCADE;
-DROP TABLE IF EXISTS packs CASCADE;
-DROP TABLE IF EXISTS students CASCADE;
-DROP TABLE IF EXISTS instructors CASCADE;
-
 CREATE TABLE instructors (
                              id SERIAL PRIMARY KEY,
                              name VARCHAR(100) NOT NULL,
@@ -21,7 +15,7 @@ CREATE TABLE students (
 
 CREATE TABLE packs (
                        id SERIAL PRIMARY KEY,
-                       year INT NOT NULL,
+                       study_year INT NOT NULL,
                        semester INT NOT NULL,
                        name VARCHAR(100) NOT NULL
 );
