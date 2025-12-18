@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>, CourseCustomRepository {
 
-    // Metode standard (Spring Data Magic)
+    // Metode standar  d (Spring Data Magic)
     List<Course> findByType(CourseType type);
 
     Course findByCode(String code);

@@ -18,13 +18,16 @@ public class StudentDTO {
 
     private Integer year;
 
+    private String password;
+
     // Constructori, Getters, Setters
     public StudentDTO() {}
-    public StudentDTO(String name, String email, String code, Integer year) {
+    public StudentDTO(String name, String email, String code, Integer year,  String password) {
         this.name = name;
         this.email = email;
         this.code = code;
         this.year = year;
+        this.password = password;
     }
 
     public String getName() { return name; }
@@ -35,4 +38,6 @@ public class StudentDTO {
     public void setCode(String code) { this.code = code; }
     public Integer getYear() { return year; }
     public void setYear(Integer year) { this.year = year; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

@@ -1,11 +1,12 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.LoginRequest; // Creeaza un DTO simplu cu email/password
-import com.example.demo.dto.RegisterRequest; // DTO cu name, email, password, code, year
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.model.Role; // <--- 1. Importul pentru Role (ESENȚIAL)
 import com.example.demo.model.Student;
 import com.example.demo.repository.StudentRepository;
-import com.example.demo.repository.PersonRepository;
-import com.example.demo.services.JwtService;
+// import com.example.demo.repository.PersonRepository; // Nu e neapărat necesar dacă verifici direct pe Student
+import com.example.demo.services.JwtService; // Sau JwtUtils, depinde cum l-ai numit
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,18 +20,15 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final PersonRepository personRepository;
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtService jwtService; // Asigură-te că numele clasei corespunde (JwtUtils vs JwtService)
 
     public AuthController(AuthenticationManager authenticationManager,
-                          PersonRepository personRepository,
                           StudentRepository studentRepository,
                           PasswordEncoder passwordEncoder,
                           JwtService jwtService) {
         this.authenticationManager = authenticationManager;
-        this.personRepository = personRepository;
         this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -42,24 +40,28 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // Verifică metoda din serviciul tău: generateJwtToken(authentication) sau generateJwtToken(username)
         String jwt = jwtService.generateJwtToken(authentication);
 
-        return ResponseEntity.ok(jwt); // Returneaza token-ul
+        return ResponseEntity.ok(jwt);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerStudent(@RequestBody RegisterRequest signUpRequest) {
-        if (personRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+        // E mai sigur să verifici direct în repo-ul de studenți
+        if (studentRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
-        // Create new student's account
+        // --- AICI AM CORECTAT CONSTRUCTORUL ---
         Student student = new Student(
-                signUpRequest.getName(),
-                signUpRequest.getEmail(),
-                passwordEncoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getCode(),
-                signUpRequest.getYear()
+                signUpRequest.getName(),                       // 1. Name
+                signUpRequest.getEmail(),                      // 2. Email
+                passwordEncoder.encode(signUpRequest.getPassword()), // 3. Password (Criptată)
+                Role.ROLE_STUDENT,                             // 4. Role (Adăugat manual)
+                signUpRequest.getCode(),                       // 5. Code
+                signUpRequest.getYear()                        // 6. Year
         );
 
         studentRepository.save(student);

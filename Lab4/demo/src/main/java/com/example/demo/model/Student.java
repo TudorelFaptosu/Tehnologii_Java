@@ -14,8 +14,9 @@ public class Student extends Person {
 
     public Student() {}
 
-    public Student(String name, String email, String code, Integer year) {
-        super(name, email);
+    public Student(String name, String email, String password, Role role, String code, Integer year) {
+        // Apelăm constructorul din Person cu noile câmpuri
+        super(name, email, password, role);
         this.code = code;
         this.year = year;
     }

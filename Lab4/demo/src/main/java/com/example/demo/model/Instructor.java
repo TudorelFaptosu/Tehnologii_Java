@@ -14,8 +14,8 @@ public class Instructor extends Person {
 
     public Instructor() {}
 
-    public Instructor(String name, String email) {
-        super(name, email);
+    public Instructor(String name, String email,String password,Role role) {
+        super(name,  email, password, role);
     }
 
     public List<Course> getCourses() { return courses; }
