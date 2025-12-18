@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "preferences", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"student_id", "course_id"}) // Un student voteaza un curs o singura data
+        @UniqueConstraint(columnNames = {"student_id", "course_id"})
 })
 public class Preference {
 
@@ -22,7 +22,7 @@ public class Preference {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    // Rank-ul: 1 = Cea mai dorita. Daca doua cursuri au rank 1, sunt egale (ties).
+
     @Column(nullable = false)
     private Integer rank;
 

@@ -53,4 +53,20 @@ public class PreferenceController {
         return ResponseEntity.created(linkTo(methodOn(PreferenceController.class).getStudentPreferences(studentId)).toUri())
                 .body(entityModel);
     }
+    @PostMapping("/students/{studentId}/preferences/bulk")
+    public ResponseEntity<String> addBulkPreferences(
+            @PathVariable Long studentId,                 // <--- 1. Ia ID-ul din URL (ex: 1)
+            @RequestBody List<PreferenceDTO> preferences  // <--- 2. Ia JSON-ul din Body și îl transformă în Listă Java
+    ) {
+
+        for (PreferenceDTO pref : preferences) {
+            preferenceService.savePreference(
+                    studentId,
+                    pref.getCourseId(),
+                    pref.getRank()
+            );
+        }
+
+        return ResponseEntity.ok("Preferences saved successfully!");
+    }
 }

@@ -22,5 +22,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
-    // Aici poti adauga si handler pentru erorile de validare (@Valid)
 }
