@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService; // Asigură-te că numele clasei corespunde (JwtUtils vs JwtService)
+    private final JwtService jwtService;
 
     public AuthController(AuthenticationManager authenticationManager,
                           StudentRepository studentRepository,
@@ -41,7 +41,6 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Verifică metoda din serviciul tău: generateJwtToken(authentication) sau generateJwtToken(username)
         String jwt = jwtService.generateJwtToken(authentication);
 
         return ResponseEntity.ok(jwt);
@@ -49,19 +48,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerStudent(@RequestBody RegisterRequest signUpRequest) {
-        // E mai sigur să verifici direct în repo-ul de studenți
         if (studentRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
-        // --- AICI AM CORECTAT CONSTRUCTORUL ---
+
         Student student = new Student(
-                signUpRequest.getName(),                       // 1. Name
-                signUpRequest.getEmail(),                      // 2. Email
-                passwordEncoder.encode(signUpRequest.getPassword()), // 3. Password (Criptată)
-                Role.ROLE_STUDENT,                             // 4. Role (Adăugat manual)
-                signUpRequest.getCode(),                       // 5. Code
-                signUpRequest.getYear()                        // 6. Year
+                signUpRequest.getName(),
+                signUpRequest.getEmail(),
+                passwordEncoder.encode(signUpRequest.getPassword()),
+                Role.ROLE_STUDENT,
+                signUpRequest.getCode(),
+                signUpRequest.getYear()
         );
 
         studentRepository.save(student);

@@ -51,14 +51,6 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Endpoint-urile de Login sunt publice
-                        .requestMatchers("/api/auth/**").permitAll()
-                        // 2. Swagger UI este public
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        // 3. Actuator: doar health e public, restul protejat (Cerință Homework)
-                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                        .requestMatchers("/actuator/**").hasRole("ADMIN")
-                        // 4. GET-urile sunt publice (Cerință Homework)
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         // 5. Orice altceva (POST, DELETE) necesită autentificare
                         .anyRequest().authenticated()

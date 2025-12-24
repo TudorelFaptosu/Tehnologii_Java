@@ -4,11 +4,11 @@ public class LoginRequest {
     private String email;
     private String password;
 
-    // Constructor gol (obligatoriu pentru deserializare JSON)
+
     public LoginRequest() {
     }
 
-    // Constructor cu parametri (opțional, util pentru teste)
+
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;

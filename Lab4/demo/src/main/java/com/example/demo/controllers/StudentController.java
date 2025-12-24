@@ -25,9 +25,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class StudentController {
 
     private final StudentService studentService;
-    private final PasswordEncoder passwordEncoder; // <--- 2. Injectăm Encoder-ul
+    private final PasswordEncoder passwordEncoder;
 
-    // 3. Adăugăm passwordEncoder în constructorul controller-ului
+
     public StudentController(StudentService studentService, PasswordEncoder passwordEncoder) {
         this.studentService = studentService;
         this.passwordEncoder = passwordEncoder;
@@ -59,10 +59,10 @@ public class StudentController {
     @PostMapping
     @Operation(summary = "Create a new student")
     public ResponseEntity<EntityModel<Student>> createStudent(@RequestBody @Valid StudentDTO studentDTO) {
-        // 4. Verificare simplă pentru parolă (să nu fie null la creare)
+
         String rawPassword = studentDTO.getPassword();
         if (rawPassword == null || rawPassword.isEmpty()) {
-            // Putem seta o parolă default sau returna eroare, aici punem un placeholder pt demo
+            // Putem seta o parolă default sau returna eroare
             rawPassword = "defaultPassword123";
         }
 
@@ -90,9 +90,6 @@ public class StudentController {
     @Operation(summary = "Update a student")
     public ResponseEntity<EntityModel<Student>> updateStudent(@PathVariable Long id, @RequestBody @Valid StudentDTO studentDTO) {
 
-        // La update e mai complicat cu parola.
-        // Dacă DTO-ul nu are parolă, folosim una temporară doar ca să satisfacem constructorul.
-        // Logica reală de păstrare a parolei vechi ar trebui să fie în Service.
         String passToUse = (studentDTO.getPassword() != null)
                 ? passwordEncoder.encode(studentDTO.getPassword())
                 : "NO_CHANGE";

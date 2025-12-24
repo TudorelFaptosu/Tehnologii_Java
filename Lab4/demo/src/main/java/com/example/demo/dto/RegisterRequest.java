@@ -5,7 +5,7 @@ public class RegisterRequest {
     private String email;
     private String password;
 
-    // Câmpuri specifice studentului
+
     private String code;
     private Integer year;
 
