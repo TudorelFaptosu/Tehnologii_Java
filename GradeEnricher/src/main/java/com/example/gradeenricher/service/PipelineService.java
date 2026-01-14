@@ -1,21 +1,23 @@
-package com.example.gradeenricher.service;
+package com.example.gradeenricher.service; // <--- ATENTIE LA PACHET
 
-import com.example.quickgrade.dto.GradeEvent; // Asigura-te ca ai clasa DTO si aici
+// Asigura-te ca ai clasele DTO create in pachetul com.example.gradeenricher.dto
+import com.example.gradeenricher.dto.GradeEvent;
 import com.example.gradeenricher.dto.StudentEnrichedEvent;
 import com.example.gradeenricher.dto.FinalGradeEvent;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class PipelineService {
 
+    // Aici injectam exact ce am definit in KafkaConfig: <String, Object>
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    // Mock Data Bases pentru viteza demonstratiei
+    // Date hardcodate (Mock)
     private static final Map<String, String> STUDENT_NAMES = Map.of("S100", "Student Exemplu", "S101", "Ion Popescu");
     private static final Map<String, Integer> STUDENT_YEARS = Map.of("S100", 3, "S101", 2);
     private static final Map<String, String> COURSE_NAMES = Map.of("CS301", "Tehnologii Java", "CS302", "AI");
@@ -25,7 +27,7 @@ public class PipelineService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    // --- COMPONENT 2: Adauga Student Name & Year ---
+    // Consumer 1: Primeste Raw, adauga Student info -> Trimite Partial
     @KafkaListener(topics = "raw-grades", groupId = "enricher-group-student", concurrency = "3")
     public void enrichWithStudent(GradeEvent event) {
         System.out.println("[1] Processing RAW: " + event.getStudentCode());
@@ -38,11 +40,10 @@ public class PipelineService {
                 event.getCourseCode(), event.getValue()
         );
 
-        // Trimite catre urmatorul topic
         kafkaTemplate.send("student-enriched-grades", enrichedEvent.getStudentCode(), enrichedEvent);
     }
 
-    // --- COMPONENT 3: Adauga Course Name & Semester ---
+    // Consumer 2: Primeste Partial, adauga Curs info -> Trimite Final
     @KafkaListener(topics = "student-enriched-grades", groupId = "enricher-group-course", concurrency = "3")
     public void enrichWithCourse(StudentEnrichedEvent event) {
         System.out.println("[2] Processing PARTIAL: " + event.getStudentName());
@@ -56,7 +57,6 @@ public class PipelineService {
                 event.getValue()
         );
 
-        // Trimite catre topicul final consumat de PrefSchedule
         kafkaTemplate.send("final-grades", finalEvent.getStudentCode(), finalEvent);
     }
 }
