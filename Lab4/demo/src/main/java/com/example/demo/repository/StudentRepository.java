@@ -26,4 +26,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Modifying
     @Query("UPDATE Student s SET s.year = s.year + 1 WHERE s.year < :maxYear")
     void promoteStudents(Integer maxYear);
+
+    Optional<Student> findByCode(String code);
 }
