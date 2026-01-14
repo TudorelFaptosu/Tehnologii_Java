@@ -38,12 +38,13 @@ CREATE TABLE packs (
 -- TABELA COURSES (Neschimbată)
 CREATE TABLE courses (
                          id BIGSERIAL PRIMARY KEY,
-                         type VARCHAR(20) NOT NULL, -- 'OPTIONAL' or 'COMPULSORY'
-                         code VARCHAR(20) UNIQUE NOT NULL,
-                         abbr VARCHAR(10),
-                         name VARCHAR(150) NOT NULL,
+                         type VARCHAR(20) NOT NULL,
+                         code VARCHAR(20) NOT NULL UNIQUE,
+                         abbr VARCHAR(20),
+                         name VARCHAR(100) NOT NULL,
                          description TEXT,
                          group_count INTEGER DEFAULT 1,
+                         max_students INTEGER DEFAULT 30, -- <--- ADAUGĂ ACEASTĂ LINIE
                          instructor_id BIGINT REFERENCES instructors(id),
                          pack_id BIGINT REFERENCES packs(id)
 );
@@ -65,8 +66,9 @@ CREATE TABLE grades (
 );
 CREATE TABLE course_requirements (
                                      id BIGSERIAL PRIMARY KEY,
-                                     course_id BIGINT NOT NULL REFERENCES courses(id),
-                                     compulsory_abbr VARCHAR(20) NOT NULL, -- Ex: 'Math', 'OOP' (trebuie să corespundă cu abbr din courses)
-                                     weight DOUBLE PRECISION NOT NULL,     -- Ex: 0.5 pentru 50%
+                                     course_id BIGINT NOT NULL,
+                                     compulsory_abbr VARCHAR(20) NOT NULL,
+                                     weight DOUBLE PRECISION NOT NULL,
+                                     FOREIGN KEY (course_id) REFERENCES courses(id),
                                      CONSTRAINT unique_req UNIQUE (course_id, compulsory_abbr)
 );

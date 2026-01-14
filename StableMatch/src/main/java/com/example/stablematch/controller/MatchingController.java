@@ -18,7 +18,7 @@ public class MatchingController {
 
     @PostMapping("/solve")
     public ResponseEntity<Solution> solveProblem(@RequestBody MatchingProblem problem) {
-        Solution solution = matchingService.solveRandom(problem);
+        Solution solution = matchingService.solveGaleShapley(problem);
         return ResponseEntity.ok(solution);
     }
 

@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5s # Scrape des pentru demo
+
+scrape_configs:
+  - job_name: 'stablematch-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081', 'host.docker.internal:8082']
+      # host.docker.internal permite containerului să acceseze localhost-ul mașinii tale
+      # Punem 8081 și 8082 pentru că vom rula 2 instanțe
