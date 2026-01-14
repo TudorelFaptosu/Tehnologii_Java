@@ -13,4 +13,5 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseCus
     List<Course> findByType(CourseType type);
 
     Course findByCode(String code);
+    List<Course> findByPackId(Long packId);
 }

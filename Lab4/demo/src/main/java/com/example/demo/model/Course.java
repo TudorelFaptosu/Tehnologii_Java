@@ -28,8 +28,11 @@ public class Course {
     @Column(name = "group_count", columnDefinition = "integer default 1")
     private Integer groupCount = 1;
 
-    // Relatii ManyToOne
+    // --- ADĂUGAT CÂMP NOU PENTRU CAPACITATE ---
+    @Column(name = "max_students")
+    private Integer maxStudents = 30; // Default 30 studenți dacă nu se specifică
 
+    // Relatii ManyToOne
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
@@ -38,10 +41,7 @@ public class Course {
     @JoinColumn(name = "pack_id")
     private Pack pack;
 
-    // --- Constructori ---
-
-    public Course() {
-    }
+    public Course() {}
 
     public Course(CourseType type, String code, String name, Instructor instructor, Pack pack) {
         this.type = type;
@@ -51,78 +51,38 @@ public class Course {
         this.pack = pack;
     }
 
-    // --- Getters si Setters ---
+    // --- Getters si Setters Existenti ... ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public CourseType getType() { return type; }
+    public void setType(CourseType type) { this.type = type; }
+    public String getCode() { return code; }
+    public void setCode(String code) { this.code = code; }
+    public String getAbbr() { return abbr; }
+    public void setAbbr(String abbr) { this.abbr = abbr; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public Integer getGroupCount() { return groupCount; }
+    public void setGroupCount(Integer groupCount) { this.groupCount = groupCount; }
+    public Instructor getInstructor() { return instructor; }
+    public void setInstructor(Instructor instructor) { this.instructor = instructor; }
+    public Pack getPack() { return pack; }
+    public void setPack(Pack pack) { this.pack = pack; }
 
-    public Long getId() {
-        return id;
+    // --- ADĂUGAT GETTER ȘI SETTER PENTRU MAX STUDENTS ---
+    // Această metodă rezolvă eroarea "cannot find symbol method getMaxStudents()"
+    public Integer getMaxStudents() {
+        // Dacă e null în bază, returnăm o valoare default calculată din grupe
+        if (maxStudents == null) {
+            return (groupCount != null ? groupCount : 1) * 30;
+        }
+        return maxStudents;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public CourseType getType() {
-        return type;
-    }
-
-    public void setType(CourseType type) {
-        this.type = type;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getAbbr() {
-        return abbr;
-    }
-
-    public void setAbbr(String abbr) {
-        this.abbr = abbr;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getGroupCount() {
-        return groupCount;
-    }
-
-    public void setGroupCount(Integer groupCount) {
-        this.groupCount = groupCount;
-    }
-
-    public Instructor getInstructor() {
-        return instructor;
-    }
-
-    public void setInstructor(Instructor instructor) {
-        this.instructor = instructor;
-    }
-
-    public Pack getPack() {
-        return pack;
-    }
-
-    public void setPack(Pack pack) {
-        this.pack = pack;
+    public void setMaxStudents(Integer maxStudents) {
+        this.maxStudents = maxStudents;
     }
 
     @Override

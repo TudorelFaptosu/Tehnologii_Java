@@ -56,3 +56,17 @@ CREATE TABLE preferences (
                              rank INTEGER NOT NULL,
                              UNIQUE (student_id, course_id)
 );
+-- Adaugă asta la finalul fișierului V1__Create_Schema.sql
+CREATE TABLE grades (
+                        id BIGSERIAL PRIMARY KEY,
+                        student_id BIGINT NOT NULL REFERENCES students(id),
+                        course_id BIGINT NOT NULL REFERENCES courses(id),
+                        value DOUBLE PRECISION NOT NULL
+);
+CREATE TABLE course_requirements (
+                                     id BIGSERIAL PRIMARY KEY,
+                                     course_id BIGINT NOT NULL REFERENCES courses(id),
+                                     compulsory_abbr VARCHAR(20) NOT NULL, -- Ex: 'Math', 'OOP' (trebuie să corespundă cu abbr din courses)
+                                     weight DOUBLE PRECISION NOT NULL,     -- Ex: 0.5 pentru 50%
+                                     CONSTRAINT unique_req UNIQUE (course_id, compulsory_abbr)
+);
