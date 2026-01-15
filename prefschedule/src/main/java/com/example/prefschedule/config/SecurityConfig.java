@@ -51,21 +51,17 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. PERMITE SWAGGER UI (fără asta primești 403 când încarci pagina)
+                        // 1. Swagger rămâne public (ca să poți testa)
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
 
-                        // 2. !!! CRITIC: PERMITE LOGIN/REGISTER (POST) !!!
-                        // Dacă aici ai avea 'HttpMethod.GET', cererile POST de login ar fi respinse cu 403.
+                        // 2. Auth (Login/Register) rămâne public -> Aici îți faci cont și iei token-ul
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // 3. Permite GET-uri publice pe restul API-ului (opțional)
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-
-                        // 4. Orice altceva cere token
+                        // 3. Toate celelalte (inclusiv POST /api/students) devin PROTEJATE
                         .anyRequest().authenticated()
                 );
 
