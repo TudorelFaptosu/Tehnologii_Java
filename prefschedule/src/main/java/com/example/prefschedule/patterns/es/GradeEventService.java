@@ -1,5 +1,8 @@
 package com.example.prefschedule.patterns.es;
 
+import com.example.prefschedule.repository.GradeSnapshotRepository;
+import com.example.prefschedule.repository.StudentGradeEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +12,7 @@ public class GradeEventService {
 
     private final StudentGradeEventRepository eventRepo;
     private final GradeSnapshotRepository snapshotRepo;
+
 
     public GradeEventService(StudentGradeEventRepository eventRepo, GradeSnapshotRepository snapshotRepo) {
         this.eventRepo = eventRepo;

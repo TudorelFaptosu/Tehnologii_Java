@@ -72,3 +72,22 @@ CREATE TABLE course_requirements (
                                      FOREIGN KEY (course_id) REFERENCES courses(id),
                                      CONSTRAINT unique_req UNIQUE (course_id, compulsory_abbr)
 );
+-- Tabela pentru evenimente (Event Sourcing)
+CREATE TABLE student_grade_event (
+                                     id BIGSERIAL PRIMARY KEY,
+                                     student_id BIGINT NOT NULL,
+                                     course_id BIGINT NOT NULL,
+                                     event_type VARCHAR(50) NOT NULL,
+                                     grade_value DOUBLE PRECISION,
+                                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela pentru snapshot-uri (Optimization)
+CREATE TABLE grade_snapshot (
+                                id BIGSERIAL PRIMARY KEY,
+                                student_id BIGINT NOT NULL,
+                                course_id BIGINT NOT NULL,
+                                current_grade DOUBLE PRECISION,
+                                last_event_id BIGINT,
+                                CONSTRAINT uq_student_course_snapshot UNIQUE (student_id, course_id)
+);

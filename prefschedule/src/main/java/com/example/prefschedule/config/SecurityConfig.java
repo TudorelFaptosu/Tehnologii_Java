@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity // Permite @PreAuthorize în controllere
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -51,8 +51,21 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 1. PERMITE SWAGGER UI (fără asta primești 403 când încarci pagina)
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+
+                        // 2. !!! CRITIC: PERMITE LOGIN/REGISTER (POST) !!!
+                        // Dacă aici ai avea 'HttpMethod.GET', cererile POST de login ar fi respinse cu 403.
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // 3. Permite GET-uri publice pe restul API-ului (opțional)
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        // 5. Orice altceva (POST, DELETE) necesită autentificare
+
+                        // 4. Orice altceva cere token
                         .anyRequest().authenticated()
                 );
 

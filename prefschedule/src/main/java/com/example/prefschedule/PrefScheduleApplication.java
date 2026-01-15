@@ -12,14 +12,11 @@ public class PrefScheduleApplication {
         SpringApplication.run(PrefScheduleApplication.class, args);
     }
 
-    // --- ADAUGĂ ACEST BEAN ---
-    // Aceasta va șterge TOATĂ baza de date la fiecare pornire și o va recrea de la zero.
-    // Rezolvă garantat erorile "Checksum mismatch" și "Missing column".
     @Bean
     public FlywayMigrationStrategy cleanMigrateStrategy() {
         return flyway -> {
-            flyway.clean();   // Șterge tot (drop schema)
-            flyway.migrate(); // Recreează tabelele cu noile scripturi
+            flyway.clean();
+            flyway.migrate();
         };
     }
 }

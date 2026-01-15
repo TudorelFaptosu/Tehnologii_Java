@@ -44,4 +44,9 @@ public class StudentService {
         Student student = getStudentById(id);
         studentRepository.delete(student);
     }
+
+    public Student save(Student student) {
+        this.studentRepository.save(student);
+        return student;
+    }
 }
